@@ -10,7 +10,6 @@ class CreditCardForm extends StatefulWidget {
     this.cardNumber,
     this.expiryDate,
     this.cardHolderName,
-    this.cvvCode,
     @required this.onCreditCardModelChange,
     this.themeColor,
     this.textColor = Colors.black,
@@ -20,7 +19,6 @@ class CreditCardForm extends StatefulWidget {
   final String cardNumber;
   final String expiryDate;
   final String cardHolderName;
-  final String cvvCode;
   final void Function(CreditCardModel) onCreditCardModelChange;
   final Color themeColor;
   final Color textColor;
@@ -34,7 +32,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
   String cardNumber;
   String expiryDate;
   String cardHolderName;
-  String cvvCode;
   bool isCvvFocused = false;
   Color themeColor;
 
@@ -47,8 +44,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
       MaskedTextController(mask: '00/00');
   final TextEditingController _cardHolderNameController =
       TextEditingController();
-  final TextEditingController _cvvCodeController =
-      MaskedTextController(mask: '0000');
 
   FocusNode cvvFocusNode = FocusNode();
 
@@ -61,10 +56,9 @@ class _CreditCardFormState extends State<CreditCardForm> {
     cardNumber = widget.cardNumber ?? '';
     expiryDate = widget.expiryDate ?? '';
     cardHolderName = widget.cardHolderName ?? '';
-    cvvCode = widget.cvvCode ?? '';
 
     creditCardModel = CreditCardModel(
-        cardNumber, expiryDate, cardHolderName, cvvCode, isCvvFocused);
+        cardNumber, expiryDate, cardHolderName, '', isCvvFocused);
   }
 
   @override
@@ -101,13 +95,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
       });
     });
 
-    _cvvCodeController.addListener(() {
-      setState(() {
-        cvvCode = _cvvCodeController.text;
-        creditCardModel.cvvCode = cvvCode;
-        onCreditCardModelChange(creditCardModel);
-      });
-    });
   }
 
   @override
@@ -159,30 +146,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
                     hintText: 'MM/YY'),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
-              child: TextField(
-                focusNode: cvvFocusNode,
-                controller: _cvvCodeController,
-                cursorColor: widget.cursorColor ?? themeColor,
-                style: TextStyle(
-                  color: widget.textColor,
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'CVV',
-                  hintText: 'XXXX',
-                ),
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.done,
-                onChanged: (String text) {
-                  setState(() {
-                    cvvCode = text;
-                  });
-                },
               ),
             ),
             Container(
